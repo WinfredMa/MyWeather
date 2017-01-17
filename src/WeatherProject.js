@@ -30,7 +30,7 @@ export default class MyWeather extends Component {
         forecast: {
           main: responseJSON.weather[0].main,
           description: responseJSON.weather[0].description,
-          temp: responseJSON.weather[0].temp
+          temp: responseJSON.main.temp
         }
       });
     }).catch((error) => {
@@ -41,12 +41,20 @@ export default class MyWeather extends Component {
     return (
       <View style={styles.container}>
         <Image source={require('./img/flowers.png')} style={styles.backdrop}>
-          <Text style={styles.welcome}>
-            You input {this.state.zip}.
-          </Text>
-          <Forecast style={styles.weatherInfo} main={this.state.forecast.main} description={this.state.forecast.description} temp={this.state.forecast.temp}/>
+          <View style={styles.overlay}>
+            <View style={styles.row}>
+              <Text style={[styles.mainText, styles.currentCity]}>
+                Current weather for {this.state.zip} 
+              </Text>
+              <View style={styles.zipContainer}>
+                <TextInput
+                  style={[styles.zipCode, styles.mainText]}
+                  onSubmitEditing={(event) => this.handleTextChange(event)}/>
+              </View>
+            </View>
+            <Forecast style={styles.weatherInfo} main={this.state.forecast.main} description={this.state.forecast.description} temp={this.state.forecast.temp}/>
+          </View>
         </Image>
-        <TextInput style={styles.input}  onSubmitEditing={this.handleTextChange.bind(this)}/>
       </View>
     );
   }
@@ -57,17 +65,39 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    paddingTop: 30
   },
-  welcome: {
+  overlay: {
+    paddingTop: 5,
+    backgroundColor: '#000000',
+    opacity: 0.5,
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  currentCity: {
+    flex: 2,
     fontSize: 20,
     textAlign: 'center',
     margin: 10,
+    color: '#f0f'
   },
-  input: {
+  row: {
+    height: 100
+  },
+  zipContainer: {
+    flex: 1,
+    height: 45,
+    paddingBottom: 5,
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  zipCode: {
+    height: 40,
     fontSize: 20,
-    borderWidth: 2,
-    height: 40
+    color: '#f0f',
+    borderColor: '#DDDDDD',
+    borderWidth: 1,
+    textAlign: 'center'
   },
   weatherInfo: {
     height: 80
